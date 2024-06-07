@@ -1,3 +1,4 @@
 package-lock.json
 node_modules/
 dist/
+erl_crash.dump

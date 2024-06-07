@@ -1,5 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize'
 import { sequelize } from '../../utils/utils'
+import Customer from './Customer';
 
 interface VisitAttributes {
   id: number;
@@ -28,10 +29,10 @@ Visit.init({
       primaryKey: true,
     },
     customer_id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
         references: {
-          model: 'customers',
+          model: Customer,
           key: 'id'
         },
         onDelete: 'CASCADE'
@@ -41,5 +42,6 @@ Visit.init({
     sequelize: sequelize,
     paranoid: true
 });
+
   
 export default Visit

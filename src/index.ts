@@ -9,6 +9,7 @@ require('dotenv').config();
 
 import * as customerService from './core/services/Customer.service'
 import * as orderService from './core/services/Order.service'
+import generateDummyData from './core/db/dummyData';
 
 const app = express();
 app.use(bodyParser.json());
@@ -117,7 +118,7 @@ app.post('/api/customers_by_rules', async (req: Request, res: Response) => {
   if (!rules) {
     return res.status(400).send('Rules are required');
   }
-  res.status(200).send(customerService.getCustomersByRules(rules));
+  res.status(200).send(await customerService.getCustomersByRules(rules));
 });
 
 // Start Server
@@ -125,5 +126,6 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   dbInit();
-  startConsumer().catch(err => console.log(err))
+  //generateDummyData();
+  startConsumer().catch(err => console.log(err));
 });

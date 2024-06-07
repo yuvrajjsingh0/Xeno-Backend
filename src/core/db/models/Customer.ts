@@ -1,5 +1,7 @@
 import { DataTypes, Model, Optional } from 'sequelize'
 import { sequelize } from '../../utils/utils'
+import Order from './Order';
+import Visit from './Visit';
 
 interface CustomerAttributes {
   id: number;
@@ -43,5 +45,8 @@ Customer.init({
     sequelize: sequelize,
     paranoid: true
 });
+
+Customer.hasMany(Order, { foreignKey: 'customer_id' });
+Customer.hasMany(Visit, { foreignKey: 'customer_id' });
   
 export default Customer

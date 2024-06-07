@@ -35,3 +35,4 @@ export const deleteById = async (id: number): Promise<boolean> => {
 export const getAll = async (): Promise<OrderOutput[]> => {
     return Order.findAll();
 }
+

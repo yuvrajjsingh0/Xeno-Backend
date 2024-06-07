@@ -8,6 +8,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 require('dotenv').config();
 
 import * as customerService from './core/services/Customer.service'
+import * as orderService from './core/services/Order.service'
 
 const app = express();
 app.use(bodyParser.json());
@@ -75,6 +76,14 @@ app.post('/api/customers', async (req: Request, res: Response) => {
   res.status(200).send('Customer data sent to queue');
 });
 
+app.get('/api/customers', async (req: Request, res: Response) => {
+  res.status(200).send(await customerService.getAll());
+});
+
+app.get('/api/customer/:id', async (req: Request, res: Response) => {
+  res.status(200).send(await customerService.getById(Number(req.params.id)));
+});
+
 // Order API
 app.post('/api/orders', async (req: Request, res: Response) => {
   const { customer_id, product, quantity } = req.body;
@@ -83,6 +92,14 @@ app.post('/api/orders', async (req: Request, res: Response) => {
   }
   channel.sendToQueue('orderQueue', Buffer.from(JSON.stringify({ customer_id, product, quantity })));
   res.status(200).send('Order data sent to queue');
+});
+
+app.get('/api/orders', async (req: Request, res: Response) => {
+  res.status(200).send(await orderService.getAll());
+});
+
+app.get('/api/order/:id', async (req: Request, res: Response) => {
+  res.status(200).send(await orderService.getById(Number(req.params.id)));
 });
 
 // Visit API
@@ -95,7 +112,7 @@ app.post('/api/visits', async (req: Request, res: Response) => {
   res.status(200).send('Visit data sent to queue');
 });
 
-app.post('/api/customers_by_rules/', async (req: Request, res: Response) => {
+app.post('/api/customers_by_rules', async (req: Request, res: Response) => {
   const { rules } = req.body;
   if (!rules) {
     return res.status(400).send('Rules are required');

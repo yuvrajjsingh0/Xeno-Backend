@@ -1,5 +1,6 @@
 import CommunicationLog from '../models/CommunicationLog'
 import {CommunicationLogInput, CommunicationLogOutput} from '../models/CommunicationLog'
+import Customer from '../models/Customer'
 
 export const create = async (payload: CommunicationLogInput): Promise<CommunicationLogOutput> => {
     const communicationLog = await CommunicationLog.create(payload)
@@ -40,7 +41,14 @@ export const getByAudienceId = async (audience_id: number): Promise<Communicatio
     const communicationLog = await CommunicationLog.findAll({
         where: {
             audience_id: audience_id
-        }
+        },
+        include: [
+            {
+                model: Customer, 
+                as:'customer',
+                attributes: ['name']
+            }
+        ]
     });
     if (!communicationLog) {
         // @todo throw custom error

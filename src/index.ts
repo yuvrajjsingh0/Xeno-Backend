@@ -4,55 +4,17 @@ import amqp from 'amqplib';
 import { Request, Response } from 'express';
 import startConsumer from './consumer/consumer';
 import dbInit from './core/db/init';
-const { Sequelize, DataTypes } = require('sequelize');
 require('dotenv').config();
 
 import * as customerService from './core/services/Customer.service'
 import * as orderService from './core/services/Order.service'
-import generateDummyData from './core/db/dummyData';
+import * as audienceService from './core/services/Audience.service'
+import * as communicationLogService from './core/services/CommunicationLog.service'
 import cors from 'cors';
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors())
-
-// MySQL Connection using Sequelize
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
-  dialect: 'mysql'
-});
-
-// Models
-const Customer = sequelize.define('Customer', {
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  email: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true
-  }
-}, {});
-
-const Order = sequelize.define('Order', {
-  customer_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'customers',
-      key: 'id'
-    },
-    onDelete: 'CASCADE'
-  },
-  product: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  quantity: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  }
-}, {});
 
 // RabbitMQ Connection
 let channel: amqp.Channel, connection;
@@ -63,6 +25,8 @@ async function connectRabbitMQ() {
     await channel.assertQueue('customerQueue');
     await channel.assertQueue('orderQueue');
     await channel.assertQueue('visitQueue');
+    await channel.assertQueue('audienceQueue');
+    await channel.assertQueue('communicationQueue');
   } catch (error) {
     console.error('RabbitMQ connection error:', error);
   }
@@ -121,6 +85,32 @@ app.post('/api/customers_by_rules', async (req: Request, res: Response) => {
     return res.status(400).send('Rules are required');
   }
   res.status(200).send(await customerService.getCustomersByRules(rules));
+});
+
+app.get('/api/audiences', async (req: Request, res: Response) => {
+  res.status(200).send(await audienceService.getAll());
+});
+
+app.post('/api/audiences', async (req: Request, res: Response) => {
+  const { title, numUsers, rules } = req.body;
+  if (!title || !numUsers || !rules) {
+    return res.status(400).send({error: 'Title, Number of Users, and Rules are required'});
+  }
+  channel.sendToQueue('audienceQueue', Buffer.from(JSON.stringify({ title, numUsers, rules })));
+  res.status(200).send('Audience data sent to queue');
+});
+
+app.get('/api/audience/:id', async (req: Request, res: Response) => {
+  res.status(200).send(await audienceService.getById(Number(req.params.id)));
+});
+
+app.post('/api/audience/:id/startCampaign', async (req: Request, res: Response) => {
+  channel.sendToQueue('communicationQueue', Buffer.from(JSON.stringify({ audienceId: req.params.id })));
+  res.status(200).send('communication data sent to queue');
+});
+
+app.get('/api/audience/:id/campaignLog', async (req: Request, res: Response) => {
+  res.status(200).send(await communicationLogService.getByAudienceId(Number(req.params.id)));
 });
 
 // Start Server

@@ -1,5 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize'
 import { sequelize } from '../../utils/utils'
+import CommunicationLog from './CommunicationLog';
 
 interface AudienceAttributes {
   id: number;
@@ -49,4 +50,6 @@ Audience.init({
     paranoid: true
 });
   
+Audience.hasMany(CommunicationLog, { foreignKey: 'audience_id' });
+
 export default Audience

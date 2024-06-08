@@ -2,6 +2,7 @@ import { DataTypes, Model, Optional } from 'sequelize'
 import { sequelize } from '../../utils/utils'
 import Order from './Order';
 import Visit from './Visit';
+import CommunicationLog from './CommunicationLog';
 
 interface CustomerAttributes {
   id: number;
@@ -48,5 +49,6 @@ Customer.init({
 
 Customer.hasMany(Order, { foreignKey: 'customer_id' });
 Customer.hasMany(Visit, { foreignKey: 'customer_id' });
+Customer.hasMany(CommunicationLog, { foreignKey: 'customer_id' });
   
 export default Customer

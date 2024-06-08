@@ -10,9 +10,11 @@ require('dotenv').config();
 import * as customerService from './core/services/Customer.service'
 import * as orderService from './core/services/Order.service'
 import generateDummyData from './core/db/dummyData';
+import cors from 'cors';
 
 const app = express();
 app.use(bodyParser.json());
+app.use(cors())
 
 // MySQL Connection using Sequelize
 const sequelize = new Sequelize(process.env.DATABASE_URL, {

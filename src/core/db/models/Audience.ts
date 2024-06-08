@@ -7,6 +7,7 @@ interface AudienceAttributes {
   title: string;
   numUsers: number;
   rules?: string;
+  isCompleted?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
@@ -19,6 +20,7 @@ class Audience extends Model<AudienceAttributes, AudienceInput> implements Audie
     public title!: string;
     public numUsers!: number;
     public rules!: string;
+    public isCompleted!: boolean;
   
     // timestamps!
     public readonly createdAt!: Date;
@@ -43,6 +45,10 @@ Audience.init({
     rules: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    isCompleted: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false
     }
   }, {
     timestamps: true,

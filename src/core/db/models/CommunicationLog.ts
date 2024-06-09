@@ -60,6 +60,5 @@ CommunicationLog.init({
     sequelize: sequelize,
     paranoid: true
 });
-
   
 export default CommunicationLog

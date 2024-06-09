@@ -82,7 +82,7 @@ app.post('/api/visits', async (req: Request, res: Response) => {
 app.post('/api/customers_by_rules', async (req: Request, res: Response) => {
   const { rules } = req.body;
   if (!rules) {
-    return res.status(400).send('Rules are required');
+    return res.status(400).send({error: 'Rules are required'});
   }
   res.status(200).send(await customerService.getCustomersByRules(rules));
 });
@@ -97,7 +97,7 @@ app.post('/api/audiences', async (req: Request, res: Response) => {
     return res.status(400).send({error: 'Title, Number of Users, and Rules are required'});
   }
   channel.sendToQueue('audienceQueue', Buffer.from(JSON.stringify({ title, numUsers, rules })));
-  res.status(200).send('Audience data sent to queue');
+  res.status(200).send({message: 'Audience data sent to queue'});
 });
 
 app.get('/api/audience/:id', async (req: Request, res: Response) => {
@@ -106,7 +106,7 @@ app.get('/api/audience/:id', async (req: Request, res: Response) => {
 
 app.post('/api/audience/:id/startCampaign', async (req: Request, res: Response) => {
   channel.sendToQueue('communicationQueue', Buffer.from(JSON.stringify({ audienceId: req.params.id })));
-  res.status(200).send('communication data sent to queue');
+  res.status(200).send({message: 'communication data sent to queue'});
 });
 
 app.get('/api/audience/:id/campaignLog', async (req: Request, res: Response) => {

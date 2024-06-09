@@ -47,8 +47,5 @@ Customer.init({
     paranoid: true
 });
 
-Customer.hasMany(Order, { foreignKey: 'customer_id' });
-Customer.hasMany(Visit, { foreignKey: 'customer_id' });
-Customer.hasMany(CommunicationLog, { foreignKey: 'customer_id' });
   
 export default Customer

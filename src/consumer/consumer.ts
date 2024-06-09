@@ -64,7 +64,7 @@ async function startConsumer() {
         for(const customer of customers){
           // Send message to each customer according to campaign
           const rand = Math.random();
-          channel.sendToQueue("communicationMessageQueue", Buffer.from(JSON.stringify({ customer_id: customer, audience_id: audienceId, status: rand < 0.9 ? "SENT" : "FAILED" })))
+          channel.sendToQueue("communicationMessageQueue", Buffer.from(JSON.stringify({ customer_id: customer.id, audience_id: audienceId, status: rand < 0.9 ? "SENT" : "FAILED" })))
         }
         return;
       }).then(() => {

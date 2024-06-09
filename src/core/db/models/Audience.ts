@@ -56,6 +56,5 @@ Audience.init({
     paranoid: true
 });
   
-Audience.hasMany(CommunicationLog, { foreignKey: 'audience_id' });
 
 export default Audience

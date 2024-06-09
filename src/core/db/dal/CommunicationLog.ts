@@ -1,3 +1,4 @@
+import { sequelize } from '../../utils/utils'
 import CommunicationLog from '../models/CommunicationLog'
 import {CommunicationLogInput, CommunicationLogOutput} from '../models/CommunicationLog'
 import Customer from '../models/Customer'
@@ -44,9 +45,7 @@ export const getByAudienceId = async (audience_id: number): Promise<Communicatio
         },
         include: [
             {
-                model: Customer, 
-                as:'customer',
-                attributes: ['name']
+                model: sequelize.models['Customer']
             }
         ]
     });

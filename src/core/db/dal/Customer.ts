@@ -29,6 +29,19 @@ export const getById = async (id: number): Promise<CustomerOutput> => {
     return customer
 }
 
+export const getByEmail = async (email: string): Promise<CustomerOutput> => {
+  const customer = await Customer.findOne({
+    where: {
+      email: email
+    }
+  });
+  if (!customer) {
+      // @todo throw custom error
+      throw new Error('not found')
+  }
+  return customer
+}
+
 export const deleteById = async (id: number): Promise<boolean> => {
     const deletedCustomerCount = await Customer.destroy({
         where: {id}

@@ -20,3 +20,7 @@ export const getAll = (): Promise<CustomerOutput[]> => {
 export const getCustomersByRules = (rules: any): Promise<CustomerOutput[]> => {
     return customerDal.getCustomersByRules(rules);
 }
+
+export const getCustomerEmail = (email: any): Promise<CustomerOutput> => {
+    return customerDal.getByEmail(email);
+}

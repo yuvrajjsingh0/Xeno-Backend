@@ -6,8 +6,11 @@ import CommunicationLog from './models/CommunicationLog'
 const isDev = process.env.NODE_ENV === 'development'
 
 const dbInit = async () => {
-    // Audience.sync({alter: true});
-    // CommunicationLog.sync({alter: true});
+    Customer.sync({alter: true});
+    Order.sync({alter: true});
+    Visit.sync({alter: true});
+    Audience.sync({alter: true});
+    CommunicationLog.sync({alter: true});
     
     Customer.hasMany(Order, { foreignKey: 'customer_id' });
     Customer.hasMany(Visit, { foreignKey: 'customer_id' });
